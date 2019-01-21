@@ -10,20 +10,22 @@ class RegisterController extends Controller
     {
         if (!isset($_POST['nombre']) or !isset($_POST['email']) or !isset($_POST['contrasena'])) 
         {
-            return $this->error(400, 'No puede haber campos vacios');
+            return $this->error(400, $request);
         }
-        $usuario = $_POST['nombre'];
+
+        $usuario = $this->deleteSpace($_POST['nombre']); 
+        //$usuario = $_POST['nombre'];
         $email = $_POST['email'];
         $contrasena = $_POST['contrasena'];
-        // if($this->checkPassword($password))
-        // {
-        //     return $this->error(415,'La contraseña tiene que ser superior a 8 carecteres');
-        // }
-        // if($this->checkEmail($email))
-        // {
-        //     return $this->error(415,'El email no es valido');
-        // }
-        if($this->checkUserExist($email))
+        if($this->checkPassword($contrasena))
+        {
+            return $this->error(415,'La contraseña tiene que ser superior a 8 carecteres');
+        }
+        if($this->checkEmail($email))
+        {
+            return $this->error(415,'El email no es valido');
+        }
+        if($this->checkUsuarioExist($email))
         {
             return $this->error(415,'El usuario ya existe');
         }
@@ -42,23 +44,23 @@ class RegisterController extends Controller
             return $this->error(400,'No puede haber campos vacios');
         }    
     }
-    // public function checkPassword($password)
-    // {
-    //     if(strlen($password) = 8)
-    //     {
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    // public function checkEmail($email)
-    // {
-    //     if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-    //     {
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    public function checkUserExist($email)
+    public function checkPassword($contrasena)
+    {
+        if(strlen($contrasena) < 8)
+        {
+            return true;
+        }
+        return false;
+    }
+    public function checkEmail($email)
+    {
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+        {
+            return true;
+        }
+        return false;
+    }
+    public function checkUsuarioExist($email)
     {
         $usuarioData = Usuario::where('email',$email)->first();
         if(!is_null($usuarioData))
@@ -66,5 +68,20 @@ class RegisterController extends Controller
             return true;
         }
         return false;
+    }
+
+    public function destroy($nombre)
+    {
+        if ($this->checkLogin()) 
+        { 
+            $usuarioNombre = $nombre;
+            $usuarioSave = Lugares::where('nombre',$usuarioNombre)->first();
+            $usuarioSave->delete();
+            return $this->success('Cuenta eliminada', "");
+        }
+        else
+        {
+            return $this->error(400, "Acceso denegado");
+        }       
     }
 }

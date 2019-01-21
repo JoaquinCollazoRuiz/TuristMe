@@ -71,5 +71,12 @@ class Controller extends BaseController
             return true;
         }
         return false;
-    }    
+    }   
+
+    protected function deleteSpace($string)
+    {
+        $string = str_replace(' ', '', $string);
+        return $string;
+    }
+
 } 
