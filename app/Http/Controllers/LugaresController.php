@@ -79,15 +79,15 @@ class LugaresController extends Controller
         { 
             if(is_null($lugar))
             {
-                return $this->error(400, "El nombre de la categoria tiene que estar rellenado");
+                return $this->error(400, "El nombre del lugar tiene que estar rellenado");
             }
             if(!$request->filled("newLugarNombre"))
             {
-                return $this->error(400, "El nombre de la nueva categoria tiene que estar rellenado");
+                return $this->error(400, "El nombre del nuevo lugar tiene que estar rellenado");
             }
             if(is_null($lugar))
             {
-                return $this->error(400, "El nombre de la categoria que quieres cambiar debe estar rellenado");
+                return $this->error(400, "El nombre del lugar que quieres cambiar debe estar rellenado");
             }
             $newNombre = $request->newLugarNombre;
             $lugarNombre = $lugar;
@@ -96,7 +96,7 @@ class LugaresController extends Controller
             $lugarSave = $this->oneLugarOfUsuario($usuarioData->id,$lugar);
             $lugarSave->nombre = $newNombre;
             $lugarSave->save();
-            return $this->success('Categoria modificada', $lugarSave);
+            return $this->success('Lugar modificada', $lugarSave);
         }
         else
         {
@@ -111,7 +111,7 @@ class LugaresController extends Controller
             $lugarNombre = $lugar;
             $lugarSave = Lugares::where('nombre',$lugarNombre)->first();
             $lugarSave->delete();
-            return $this->success('eliminada categoria', "");
+            return $this->success('eliminado lugar', "");
         }
         else
         {
@@ -126,7 +126,7 @@ class LugaresController extends Controller
         {
             if($LugarSave->nombre == $lugarNombre)
             {
-                exit($this->error(400,'El nombre de la categoria ya existe'));
+                exit($this->error(400,'El nombre del lugar ya existe'));
             }  
         }
     }
@@ -145,6 +145,6 @@ class LugaresController extends Controller
                 return $categorie;
             }
         }
-        exit($this->error(400,'Esta categoria no existe, introduce una que ya exista'));
+        exit($this->error(400,'Este lugar no existe, introduce una que ya exista'));
     }
 }

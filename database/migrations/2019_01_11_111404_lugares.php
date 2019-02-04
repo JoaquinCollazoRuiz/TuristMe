@@ -19,8 +19,8 @@ class Lugares extends Migration
             $table->string('descripcion');
             $table->string('fechaInicio');
             $table->string('fechaFin');
-            $table->float('coordenadasX');
-            $table->float('coordenadasY');
+            $table->double('coordenadasX');
+            $table->double('coordenadasY');
             $table->string('id_usuario');
             $table->timestamps();
         });
