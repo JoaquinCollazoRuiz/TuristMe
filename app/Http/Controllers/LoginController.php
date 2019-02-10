@@ -10,10 +10,12 @@ class LoginController extends Controller
 {
     public function login(Request $req)
     {
+        
         if (!isset($_POST['email']) or !isset($_POST['contrasena'])) 
         {
             return $this->error(400, 'Campos incompletos');
         }
+
         $email = $_POST['email'];
         $contrasena = $_POST['contrasena'];
         if ($this->checkExist($email,$contrasena))
@@ -23,21 +25,24 @@ class LoginController extends Controller
                 'id' => $usuarioSave->id,
                 'nombre' => $usuarioSave->nombre,
                 'email' => $usuarioSave->email,
-                'contrasena' => $usuarioSave->contrasena
+                'contrasena' => $usuarioSave->contrasena,
+                'id_rol' => $usuarioSave->id_rol,
             );
             $token = JWT::encode($usuarioData, $this->key);
-            return $this->success('Usuario Logeado', $token);
+            // return $this->success('Usuario Logeado', $token);
+            return response($token);
         }
         else
         {
             return $this->error(400, 'Datos incorrectos');
         }
     }
+
     public function checkExist($email,$contrasena)
     {   
         $usuarioSave = Usuario::where('email', $email)->first();
         
-        if(!is_null($usuarioSave) && $usuarioSave->contrasena == $contrasena)
+        if(!is_null($usuarioSave) && $usuarioSave->contrasena == $contrasena && $usuarioSave->id_rol == 0)
         {
             return true;
         }

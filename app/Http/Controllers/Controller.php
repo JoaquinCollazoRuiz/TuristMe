@@ -57,21 +57,23 @@ class Controller extends BaseController
             return null;
         }	
     }
-	protected function checkLogin()
+
+    protected function checkLogin()
     {
     	$usuarioData = $this->getUsuarioData();
         if(is_null($usuarioData))
         {
             return false;
         }
+
         $usuarioSave = Usuario::where('email', $usuarioData->email)->first();
-		
+        
         if(!is_null($usuarioSave) && $usuarioSave->contrasena == $usuarioData->contrasena)
         {
             return true;
         }
         return false;
-    }   
+    } 
 
     protected function deleteSpace($string)
     {

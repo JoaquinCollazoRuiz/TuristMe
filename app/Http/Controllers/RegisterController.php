@@ -29,7 +29,7 @@ class RegisterController extends Controller
         {
             return $this->error(415,'El usuario ya existe');
         }
-     
+        
         if (!empty($usuario) && !empty($email) && !empty($contrasena))
         {
             $usuarios = new Usuario();

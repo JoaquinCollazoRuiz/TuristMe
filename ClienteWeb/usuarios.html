@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="users.js"></script>
+	<title>Crud Usuarios</title>
+
+	<style>
+	*
+	{
+		
+	}
+	body
+	{
+		background-image: url("fondoLogin.png");
+	}
+	#form
+	{
+		text-align: center;
+		background-color: rgba(221, 183, 255, 0.5);
+
+		padding: 5px;
+		margin-left: auto;
+		margin-right: auto;
+		width: 350px;
+		height: 150px;
+	}
+
+	#Estructura
+	{
+		text-align: center;
+		background-color: rgba(221, 183, 255, 0.5);
+
+		padding: 5px;
+		margin-left: auto;
+		margin-right: auto;
+		width: 350px;
+		margin-top: inherit;
+	}
+
+	h1
+	{
+		margin-top: 10%;
+		text-align: center;
+	}
+	.respuesta
+	{
+		text-align: center;
+		background-color: rgba(221, 183, 255, 0.5);
+
+		padding: 5px;
+		margin-left: auto;
+		margin-right: auto;
+		width: 350px;
+		color:white;
+	}
+	.tabla
+	{
+		text-align: center;
+		background-color: rgba(221, 183, 255, 0.5);
+
+		margin-left: auto;
+		margin-right: auto;
+		padding: 10px;
+		color:white;
+	}
+	.cajaLogin
+	{
+		width: 300px;
+		background-color: rgba(221, 183, 255, 0.5);
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.btn
+	{
+		text-align: center;
+
+		padding: 5px;
+		margin-left: auto;
+		margin-right: auto;
+	}	
+	.btn_borrar
+	{
+
+		padding: 2788px;
+		
+	}
+	.error
+	{
+		text-align: center;
+		background-color: rgba(221, 183, 255, 0.5);
+
+		padding: 5px;
+		margin-left: auto;
+		margin-right: auto;
+		width: 200px;
+		color:white;
+	}
+	.prueba
+	{
+		padding: 25px;
+
+	}
+</style>
+</head>
+<body>
+	<div style="text-align: right;">
+		<input class="btn" type="button" onclick="CerrarSesion()" value="Log out">
+
+	</div>
+
+	<h1 class="cajaLogin">Administration Panel</h1>
+	<div id="form">
+		<br>
+		<input type="name" id="name" placeholder="Username" style="width: 200px; text-align: center;">
+		<br><br>
+		<input type="email" id="mail" placeholder="Email" style="width: 200px; text-align: center;">
+		<br><br>
+		<input id="password" type="name" placeholder="Password" style="width: 200px; text-align: center;">
+		<br><br>
+		<input type="submit" id="user-submit" class="btn" value="Create user">
+		<br>
+	</div>
+
+	<div id="Estructura">
+		<input class="btn" id="listUsers" type="button" onclick="allUsers()" value="Show users">
+	</div>
+</body>
+
+<script type="text/javascript">
+
+	if(!localStorage.getItem("Authorization"))
+	{
+		window.location = "http://localhost:8888/SitiosVisitados/ClienteWeb/login.html";
+	}
+
+	function allUsers(){
+
+		var Authorization = localStorage.getItem("Authorization"); 
+		$(".error").remove();
+		$("#tabla").remove();
+		$.ajax({
+		 	method: "GET",
+		 	url: "http://localhost:8888/SitiosVisitados/public/index.php/api/usuarios",
+		 	headers:
+		 	{
+		 		"Authorization" : Authorization 
+		 	},
+		 	success: function(response){
+				
+				var response = jQuery.parseJSON(response);
+				if(document.getElementById("tabla") == null)
+				{
+					$('<table id="tabla"/>').html("").appendTo('#Estructura');
+					$('<th id="filaNombre" class="respuesta"/>').html("Username").appendTo('#tabla');
+					$('<th id="filaEmail" class="respuesta"/>').html("Email").appendTo('#tabla');
+					$('<th id="filaEditar" class="respuesta"/>').html("Edit").appendTo('#tabla');
+					$('<th id="filaBorrar" class="respuesta"/>').html("Delete").appendTo('#tabla');
+				}
+				
+				for (i = 0; i < response.data.length; i++) {
+					//Columna Nombre
+				  	$('<div class="prueba"/><br>').html(response.data[i].nombre).appendTo('#filaNombre');
+				  	//Columna Email
+				  	$('<div class="prueba"/><br>').html(response.data[i].email).appendTo('#filaEmail');
+				  	//Fila editar
+				  	$('<br>').html("").appendTo('#filaEditar');
+				  	$('<input id="name" type="text"  class="editName" placeholder="New Username">').html("").appendTo('#filaEditar').attr("id", response.data[i].id + "Name");
+				  	$('<input id="email" type="email"  class="editEmail" placeholder="New Email">').html("").appendTo('#filaEditar').attr("id", response.data[i].id + "Email");
+				  	$('<input id="password" type="password"  class="editPasword" placeholder="New password">').html("").appendTo('#filaEditar').attr("id", response.data[i].id + "Password");
+				  	$('<input type="button" class="btn" onclick="EditUser(this)" value="Edit">').html("").appendTo('#filaEditar').attr("id", response.data[i].id);
+				  	$('<br>').html("").appendTo('#filaEditar');
+				  	//Fila Borrar
+				  	$('<br><input type="button" onclick="Delete(this)" class="btn_borrar" value="Delete"><br>').html("").appendTo('#filaBorrar').attr("id", response.data[i].id);
+				};
+		 	},
+		
+		 	error: function(response){
+		 		var response = jQuery.parseJSON(response.responseText);
+		 		$('<div class="error"/>').html(response.message).appendTo('body');
+		 	}
+		});
+	}
+
+	function EditUser(button){
+		var Authorization = localStorage.getItem("Authorization");
+		var name = document.getElementById(button.id + "Name");
+		var email = document.getElementById(button.id + "Email");
+		var password = document.getElementById(button.id + "Password");
+		$(".error").remove();
+		console.log(button.id);
+		console.log(name.value);
+		console.log(email.value);
+		console.log(password.value);
+    	$.ajax({
+		 	method: "PUT",
+		 	url: "http://localhost:8888/SitiosVisitados/public/index.php/api/usuarios/" + button.id,
+		 	headers:
+		 	{
+		 		"Authorization" : Authorization 
+		 	},
+		 	data: { 
+		 		newName: name.value,
+		 		newEmail: email.value,
+		 		newPassword: password.value,
+		 		"_method" : "PUT" 
+		 	},
+		 	success: function(response){
+		 		var response = jQuery.parseJSON(response);
+		 		$('<div class="error"/>').html(response.message).appendTo('#Estructura');
+		 		allUsers();
+		 	},
+		
+		 	error: function(response){
+		 	 	var response = jQuery.parseJSON(response.responseText);
+		 	 	$('<div class="error"/>').html(response.message).appendTo('#Estructura');
+		 	}
+		});
+	}
+
+	function Delete(button) {
+		var Authorization = localStorage.getItem("Authorization");
+		$(".error").remove(); 
+		$.ajax({
+		 	method: "DELETE",
+		 	url: "http://localhost:8888/SitiosVisitados/public/index.php/api/usuarios/" + button.id,
+		 	headers:
+		 	{
+		 		"Authorization" : Authorization 
+		 	},
+		 	success: function(response){
+		 		var response = jQuery.parseJSON(response);
+		 		$('<div class="error"/>').html(response.message).appendTo('#Estructura');
+		 		allUsers();
+		 	},
+		
+		 	error: function(response){
+		 	 	var response = jQuery.parseJSON(response.responseText);
+		 	 	$('<div class="error"/>').html(response.message).appendTo('#Estructura');
+		 	 	allUsers();
+		 	}
+		});		
+	}
+
+	function CerrarSesion()
+	{
+		console.log("CerrarSesion");
+		localStorage.clear();
+		window.location = "http://localhost:8888/SitiosVisitados/ClienteWeb/login.html";  
+	}
+</script>
+</html>
