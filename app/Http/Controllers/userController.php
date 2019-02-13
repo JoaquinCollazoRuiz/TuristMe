@@ -35,6 +35,27 @@ class userController extends Controller
                 return $this-> error(400, "Campos vacios");
             }
 
+
+
+            if($this->checkPassword($request->contrasena))
+            {
+                return $this->error(415,'La contraseña tiene que ser superior a 8 carecteres');
+            }
+
+            if($this->checkPassword($request->contrasena))
+            {
+                return $this->error(415,'La contraseña tiene que ser superior a 8 carecteres');
+            }
+            if($this->checkEmail($request->email))
+            {
+                return $this->error(415,'El email no es valido');
+            }
+            if($this->checkUsuarioExist($request->email))
+            {
+                return $this->error(415,'El usuario ya existe');
+            }
+          
+         
             $usuarioData = $this->getUsuarioData();
             $this->isUsedUsuarioNombre($request->usuarioNombre,$usuarioData->id);
             $usuario = new Usuario();
@@ -60,6 +81,19 @@ class userController extends Controller
                 return $this-> error(400, "Campos vacios");
             }
 
+            if($this->checkPassword($request->contrasena))
+            {
+                return $this->error(415,'La contraseña tiene que ser superior a 8 carecteres');
+            }
+            if($this->checkEmail($request->email))
+            {
+                return $this->error(415,'El email no es valido');
+            }
+            if($this->checkUsuarioExist($request->email))
+            {
+                return $this->error(415,'El usuario ya existe');
+            }
+
             $usuarioData = $this->getUsuarioData();
             $this->isUsedUsuarioNombre($request->usuarioNombre,$usuarioData->id);
             $usuario = new Usuario();
@@ -79,10 +113,11 @@ class userController extends Controller
     {
         if ($this->checkLogin()) 
         {
-            if(is_null($usuarioNombre))
+            if(is_null($request->email))
             {
                 return $this->error(400, "El nombre del usuario tiene que estar rellenado");
             }
+
             $usuarioData = $this->getUsuarioData();
             $usuarioSave = $this->oneUsuarioOfUsuario($usuarioData->id,$usuarioNombre);
             return $this->success('La categoria selecionada', $usuarioSave);
@@ -97,6 +132,19 @@ class userController extends Controller
     {
         if ($this->checkLogin()) 
         { 
+            if($this->checkPassword($request->newContrasena))
+            {
+                return $this->error(415,'La contraseña tiene que ser superior a 8 carecteres');
+            }
+            if($this->checkEmail($request->newEmail))
+            {
+                return $this->error(415,'El email no es valido');
+            }
+            if($this->checkUsuarioExist($request->newEmail))
+            {
+                return $this->error(415,'El usuario ya existe');
+            }
+
             $infoToken = $this->getUsuarioData();
 
             $newName = $request->newName;
@@ -148,13 +196,13 @@ class userController extends Controller
         $usuariosCSave = $this->allUsuariosOneUsuario($id_rol);
         foreach ($usuariosCSave as $Usuario => $UsuarioSave) 
         {
-            if($UsuarioSave->nombre == $usuarioNombre)
+            if($UsuarioSave->email == $usuarioNombre)
             {
-                exit($this->error(400,'El nombre del usuario ya existe'));
+                exit($this->error(400,'El nombre del email ya existe'));
             }  
         }
     }
-
+    
     private function allUsuariosOneUsuario($id)
     {
         return Usuario::where('id_rol', $id)->get();

@@ -6,10 +6,7 @@
 	<title>Crud Usuarios</title>
 
 	<style>
-	*
-	{
-		
-	}
+	*{}
 	body
 	{
 		background-image: url("fondoLogin.png");
@@ -34,7 +31,7 @@
 		padding: 5px;
 		margin-left: auto;
 		margin-right: auto;
-		width: 350px;
+		width: 450px;
 		margin-top: inherit;
 	}
 
@@ -135,7 +132,6 @@
 	}
 
 	function allUsers(){
-
 		var Authorization = localStorage.getItem("Authorization"); 
 		$(".error").remove();
 		$("#tabla").remove();
@@ -200,9 +196,9 @@
 		 		"Authorization" : Authorization 
 		 	},
 		 	data: { 
-		 		newName: name.value,
-		 		newEmail: email.value,
-		 		newPassword: password.value,
+		 		"newName": name.value,
+		 		"newEmail": email.value,
+		 		"newContrasena": password.value,
 		 		"_method" : "PUT" 
 		 	},
 		 	success: function(response){

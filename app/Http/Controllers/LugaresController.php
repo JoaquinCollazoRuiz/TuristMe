@@ -31,10 +31,11 @@ class LugaresController extends Controller
         if ($this->checkLogin()) 
         { 
 
-        	if (!$request->filled("lugarNombre") or !$request->filled("fechaInicio") or !$request->filled("fechaFin"))
-         {
+        if (!$request->filled("lugarNombre") or !$request->filled("fechaInicio") or !$request->filled("fechaFin"))
+        {
           return $this-> error(400, "Campos vacios");
-      }
+        }
+      $lugarNombre = $this->deleteSpace($_POST['lugarNombre']); 
 
       $usuarioData = $this->getUsuarioData();
       $this->isUsedLugarNombre($request->lugarNombre,$usuarioData->id);

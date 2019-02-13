@@ -44,31 +44,7 @@ class RegisterController extends Controller
             return $this->error(400,'No puede haber campos vacios');
         }    
     }
-    public function checkPassword($contrasena)
-    {
-        if(strlen($contrasena) < 8)
-        {
-            return true;
-        }
-        return false;
-    }
-    public function checkEmail($email)
-    {
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-        {
-            return true;
-        }
-        return false;
-    }
-    public function checkUsuarioExist($email)
-    {
-        $usuarioData = Usuario::where('email',$email)->first();
-        if(!is_null($usuarioData))
-        {
-            return true;
-        }
-        return false;
-    }
+
 
     public function destroy($nombre)
     {

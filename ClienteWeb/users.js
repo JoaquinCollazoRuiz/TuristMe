@@ -18,9 +18,9 @@ $(document).ready(function(){
     },
 
     data: {
-     usuarioNombre: usuarioNombre,
-     email: email,
-     contrasena: contrasena
+     "usuarioNombre": usuarioNombre,
+     "email": email,
+     "contrasena": contrasena
    },
 
    success: function(data, text, done){

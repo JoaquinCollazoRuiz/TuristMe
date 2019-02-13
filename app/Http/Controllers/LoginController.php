@@ -10,12 +10,12 @@ class LoginController extends Controller
 {
     public function login(Request $req)
     {
-        
         if (!isset($_POST['email']) or !isset($_POST['contrasena'])) 
         {
             return $this->error(400, 'Campos incompletos');
         }
-
+        //En caso de estar los campos completos me comprueba si coincide con la base de datos y en caso de ser correcto
+        //me permite iniciar sesión devolviendome el token
         $email = $_POST['email'];
         $contrasena = $_POST['contrasena'];
         if ($this->checkExist($email,$contrasena))
@@ -37,11 +37,14 @@ class LoginController extends Controller
             return $this->error(400, 'Datos incorrectos');
         }
     }
-
     public function checkExist($email,$contrasena)
     {   
         $usuarioSave = Usuario::where('email', $email)->first();
         
+        // if(!is_null($usuarioSave) && $usuarioSave->contrasena == $contrasena && $usuarioSave->id_rol == 0)
+        // {
+        //     return true;
+        // }
         if(!is_null($usuarioSave) && $usuarioSave->contrasena == $contrasena && $usuarioSave->id_rol == 0)
         {
             return true;

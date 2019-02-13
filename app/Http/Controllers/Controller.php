@@ -14,18 +14,21 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     
     protected $key = '^fg?4xtyDXcjb5c__aXWb$J?2wn#9jBB4Wbc68d4YUDsB*ZuQ$p4b!rj';
+    //La uso a la hora de hacer return e identificar el error
     protected function error($code, $message)
     {
         $json = ['message' => $message];
         $json = json_encode($json);
         return  response($json, $code)->header('Access-Control-Allow-Origin', '*');
     }
+    //La uso a la hora de hacer return
     protected function success($message, $data = [])
     {
     	$json = ['message' => $message, 'data' => $data];
         $json = json_encode($json);
         return  response($json, 200)->header('Access-Control-Allow-Origin', '*');
     }
+    //Me devuelve el header deseado
     protected function getOneHeader($header)
     {
     	$headers = getallheaders();
@@ -36,6 +39,7 @@ class Controller extends BaseController
     	}
     	return null;	
     }
+    //Me comprueba si hay o no un token
     private function getToken()
     {
     	$token = $this->getOneHeader("Authorization");
@@ -45,6 +49,7 @@ class Controller extends BaseController
     	}
     	return $token;
     }
+    //Me permite decodificar el token y obtener toda la info que tenga este
     protected function getUsuarioData()
     {
         try 
@@ -57,7 +62,7 @@ class Controller extends BaseController
             return null;
         }	
     }
-
+    //Me comprueba el login
     protected function checkLogin()
     {
     	$usuarioData = $this->getUsuarioData();
@@ -74,11 +79,37 @@ class Controller extends BaseController
         }
         return false;
     } 
-
-    protected function deleteSpace($string)
+    //Me borra los espacios en caso de introducir alguno
+    public function deleteSpace($string)
     {
         $string = str_replace(' ', '', $string);
         return $string;
+    }
+
+        public function checkPassword($contrasena)
+    {
+        if(strlen($contrasena) < 8)
+        {
+            return true;
+        }
+        return false;
+    }
+    public function checkEmail($email)
+    {
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+        {
+            return true;
+        }
+        return false;
+    }
+    public function checkUsuarioExist($email)
+    {
+        $usuarioData = Usuario::where('email',$email)->first();
+        if(!is_null($usuarioData))
+        {
+            return true;
+        }
+        return false;
     }
 
 } 
