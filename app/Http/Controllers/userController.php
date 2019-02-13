@@ -132,19 +132,7 @@ class userController extends Controller
     {
         if ($this->checkLogin()) 
         { 
-            if($this->checkPassword($request->newContrasena))
-            {
-                return $this->error(415,'La contraseña tiene que ser superior a 8 carecteres');
-            }
-            if($this->checkEmail($request->newEmail))
-            {
-                return $this->error(415,'El email no es valido');
-            }
-            if($this->checkUsuarioExist($request->newEmail))
-            {
-                return $this->error(415,'El usuario ya existe');
-            }
-
+           
             $infoToken = $this->getUsuarioData();
 
             $newName = $request->newName;
@@ -153,19 +141,37 @@ class userController extends Controller
 
             $usuarioSave = Usuario::where('id',$id)->first();
 
-            if(!is_null($newName))
+
+            if(!is_null($request->newName))
             {
                 $usuarioSave->nombre = $newName;
             }
-            if(!is_null($newEmail))
+            if(!is_null($request->newEmail))
             {
+                 if($this->checkEmail($request->newEmail))
+                {
+                    return $this->error(415,'El email no es valido');
+                }
+
+                if($this->checkUsuarioExist($request->newEmail))
+                {
+                    return $this->error(415,'El usuario ya existe');
+                }
+
                 $usuarioSave->email = $newEmail;
             }
-            if(!is_null($newContrasena))
+            if(!is_null($request->newContrasena))
             {
+
+                if($this->checkPassword($request->newContrasena))
+                {
+                    return $this->error(415,'La contraseña tiene que ser superior a 8 carecteres');
+                }
+                
                 $usuarioSave->contrasena = $newContrasena;
             }
 
+            
             $usuarioSave->save();
             
             return $this->success('Usuario modificada', $usuarioSave);

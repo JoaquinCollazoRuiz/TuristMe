@@ -20,7 +20,7 @@
 		margin-left: auto;
 		margin-right: auto;
 		width: 350px;
-		height: 150px;
+	
 	}
 
 	#Estructura
@@ -107,6 +107,7 @@
 	</div>
 
 	<h1 class="cajaLogin">Administration Panel</h1>
+
 	<div id="form">
 		<br>
 		<input type="name" id="name" placeholder="Username" style="width: 200px; text-align: center;">
@@ -115,7 +116,8 @@
 		<br><br>
 		<input id="password" type="name" placeholder="Password" style="width: 200px; text-align: center;">
 		<br><br>
-		<input type="submit" id="user-submit" class="btn" value="Create user">
+		<input type="submit" id="user-submit" class="btn" onclick="crear()" value="Create user">
+		<br>
 		<br>
 	</div>
 
@@ -130,6 +132,45 @@
 	{
 		window.location = "http://localhost:8888/SitiosVisitados/ClienteWeb/login.html";
 	}
+
+	function crear()
+	{
+		$(".error").remove();
+
+	    var usuarioNombre = $('#name').val();
+	    var email = $('#mail').val();
+	    var contrasena = $('#password').val();
+	    var token = localStorage.getItem("Authorization"); 
+	    console.log(token);
+
+	    $.ajax({
+	     type: "POST",
+	     url: "http://localhost:8888/SitiosVisitados/public/index.php/api/crearuser",
+	     headers: {
+	      Authorization: token
+	    },
+
+	    data: {
+	     "usuarioNombre": usuarioNombre,
+	     "email": email,
+	     "contrasena": contrasena
+	   },
+
+	   success: function(data, text, done){
+	    console.log(data);
+	    },
+
+	    error: function(response){
+	    	
+			var response = jQuery.parseJSON(response.responseText);
+			$('<div class="error"/>').html(response.message).appendTo('#form');
+			}
+
+	    });
+
+	}
+
+
 
 	function allUsers(){
 		var Authorization = localStorage.getItem("Authorization"); 
